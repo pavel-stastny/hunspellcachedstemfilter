@@ -1,0 +1,13 @@
+
+plugins {
+    id 'java-library'
+}
+
+dependencies {
+    compile group: 'org.apache.solr', name: 'solr-core', version: '7.2.1'
+    testImplementation 'junit:junit:4.12'
+}
+
+repositories {
+    jcenter()
+}
