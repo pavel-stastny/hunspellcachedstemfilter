@@ -1,2 +1,3 @@
-# hunspellcachedstemfilter
-Standard solr hunspell token filter enhanced by caching analyzed terms
+# Hunspell token filter 
+
+Standard solr hunspell token filter enhanced by functionality of caching analyzed terms. 
