@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -85,9 +86,9 @@ public class HunspellCachedStemFilterFactory extends TokenFilterFactory implemen
 
             this.uniqIdent = identifierBuilder.toString();
 
-            Path tempPath = Files.createTempDirectory(Dictionary.getDefaultTempDir(), "Hunspell");
+            Path tempPath = Files.createTempDirectory(getDefaultTempDir(), "HunspellCached");
             try (Directory tempDir = FSDirectory.open(tempPath)) {
-                this.dictionary = new Dictionary(tempDir, "hunspell", affix, dictionaries, ignoreCase);
+                this.dictionary = new Dictionary(tempDir, "hunspellcached", affix, dictionaries, ignoreCase);
             } finally {
                 IOUtils.rm(tempPath);
             }
@@ -103,4 +104,28 @@ public class HunspellCachedStemFilterFactory extends TokenFilterFactory implemen
     public TokenStream create(TokenStream tokenStream) {
         return new HunspellCachedStemFilter(tokenStream, dictionary, this.uniqIdent, true, longestOnly);
     }
+
+    private static Path DEFAULT_TEMP_DIR;
+    /**
+     * Returns the default temporary directory. By default, java.io.tmpdir. If not accessible
+     * or not available, an IOException is thrown
+     */
+    synchronized static Path getDefaultTempDir() throws IOException {
+        if (DEFAULT_TEMP_DIR == null) {
+            // Lazy init
+            String tempDirPath = System.getProperty("java.io.tmpdir");
+            if (tempDirPath == null)  {
+                throw new IOException("Java has no temporary folder property (java.io.tmpdir)?");
+            }
+            Path tempDirectory = Paths.get(tempDirPath);
+            if (Files.isWritable(tempDirectory) == false) {
+                throw new IOException("Java's temporary folder not present or writeable?: "
+                        + tempDirectory.toAbsolutePath());
+            }
+            DEFAULT_TEMP_DIR = tempDirectory;
+        }
+
+        return DEFAULT_TEMP_DIR;
+    }
+
 }

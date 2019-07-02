@@ -1,14 +1,18 @@
 package org.apache.lucene.analysis.hunspell;
 
 import org.apache.lucene.util.CharsRef;
+import sun.rmi.runtime.Log;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.logging.Logger;
 
 /**
  * This class encalupse standard stemmer and enhance it by cache functionality.
  */
 public class StemmerCachedWrapper {
+
+    public static final Logger LOGGER  = Logger.getLogger(StemmerCachedWrapper.class.getName());
 
     static Map<String, Map<String, List<String>>> stemsCaches = Collections.synchronizedMap(new HashMap<>());
     static Map<String, Map<String, List<String>>> uniqueStemsCaches = Collections.synchronizedMap(new HashMap<>());
@@ -70,6 +74,7 @@ public class StemmerCachedWrapper {
         System.arraycopy(word, 0, nchars, 0, length);
         String chachedTerm = new String(nchars);
         Map<String, List<String>> analyzedUniqueStemCache = lookupUniqueStemCache();
+
         if (!analyzedUniqueStemCache.containsKey(chachedTerm)) {
             List<CharsRef> stem = stemmer.uniqueStems(word, length);
             cacheUniqueStem(analyzedUniqueStemCache, chachedTerm, stem);
