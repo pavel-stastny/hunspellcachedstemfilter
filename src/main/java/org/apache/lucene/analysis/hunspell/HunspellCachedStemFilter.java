@@ -32,6 +32,9 @@ public class HunspellCachedStemFilter extends TokenFilter  {
 
     private final String dictionaryUniqueIdent;
 
+
+
+
     /** The same as HunspellStemFilter but enhanced by cache possibility - do not analyze the same term again
      *  @see #HunspellCachedStemFilter(TokenStream, Dictionary, boolean)
      *  @see HunspellStemFilter#HunspellStemFilter(TokenStream, Dictionary, boolean, boolean) */
@@ -61,6 +64,8 @@ public class HunspellCachedStemFilter extends TokenFilter  {
         this.longestOnly = longestOnly;
         this.dictionaryUniqueIdent = dictionaryUniqueIdent;
     }
+
+
 
     @Override
     public boolean incrementToken() throws IOException {

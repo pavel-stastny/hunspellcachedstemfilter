@@ -17,6 +17,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 /**
  * TokenFilterFactory that creates instances of {@link HunspellCachedStemFilter}.
@@ -34,12 +35,16 @@ import java.util.Map;
  */
 public class HunspellCachedStemFilterFactory extends TokenFilterFactory implements ResourceLoaderAware {
 
+    public static final Logger LOGGER = Logger.getLogger(HunspellCachedStemFilterFactory.class.getName());
+
     private static final String PARAM_DICTIONARY    = "dictionary";
     private static final String PARAM_AFFIX         = "affix";
     // NOTE: this one is currently unused?:
     private static final String PARAM_RECURSION_CAP = "recursionCap";
     private static final String PARAM_IGNORE_CASE   = "ignoreCase";
     private static final String PARAM_LONGEST_ONLY  = "longestOnly";
+
+
 
     private final String dictionaryFiles;
     private final String affixFile;
@@ -48,6 +53,8 @@ public class HunspellCachedStemFilterFactory extends TokenFilterFactory implemen
     private Dictionary dictionary;
 
     private String uniqIdent;
+
+
 
     /** Creates a new HunspellStemFilterFactory */
     public HunspellCachedStemFilterFactory(Map<String,String> args) {
@@ -63,6 +70,8 @@ public class HunspellCachedStemFilterFactory extends TokenFilterFactory implemen
         // flags like COMPLEXPREFIXES in the data itself control this.
         // but recognize and ignore for back compat
         getInt(args, "recursionCap", 0);
+
+
         if (!args.isEmpty()) {
             throw new IllegalArgumentException("Unknown parameters: " + args);
         }
@@ -102,7 +111,8 @@ public class HunspellCachedStemFilterFactory extends TokenFilterFactory implemen
 
     @Override
     public TokenStream create(TokenStream tokenStream) {
-        return new HunspellCachedStemFilter(tokenStream, dictionary, this.uniqIdent, true, longestOnly);
+        HunspellCachedStemFilter hunspellCachedStemFilter = new HunspellCachedStemFilter(tokenStream, dictionary, this.uniqIdent, true, longestOnly);
+        return hunspellCachedStemFilter;
     }
 
     private static Path DEFAULT_TEMP_DIR;
